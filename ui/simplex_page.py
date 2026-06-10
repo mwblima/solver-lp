@@ -54,23 +54,19 @@ def simplex_ui():
     for i in range(n_vars):
         default = sv_c[i] if i < len(sv_c) else 1.0
         with obj_cols[i]:
-            # Type selector
+            # Type selector (Travado em Real para Simplex)
             vtype = st.selectbox(
                 f"{t('simplex.var_type')} x{i+1}",
                 type_options,
                 index=0,
                 key=f"vtype_{i}",
-                label_visibility="collapsed"
+                label_visibility="collapsed",
+                disabled=True
             )
             var_types.append(vtype)
             
-            # Adjust number_input based on type
-            if vtype == t("simplex.var_binary"):
-                val = st.number_input(f"**x{i+1}**", min_value=0.0, max_value=1.0, value=min(max(default, 0.0), 1.0), step=1.0, key=f"c_{i}", help=f"{t('simplex.coef_help')} x{i+1}")
-            elif vtype == t("simplex.var_integer"):
-                val = st.number_input(f"**x{i+1}**", value=float(round(default)), step=1.0, key=f"c_{i}", help=f"{t('simplex.coef_help')} x{i+1}")
-            else:
-                val = st.number_input(f"**x{i+1}**", value=default, key=f"c_{i}", help=f"{t('simplex.coef_help')} x{i+1}")
+            # Sempre real no Simplex
+            val = st.number_input(f"**x{i+1}**", value=float(default), key=f"c_{i}", help=f"{t('simplex.coef_help')} x{i+1}")
             c.append(val)
 
     # ---------- restrições -------------------------------------------

@@ -62,7 +62,7 @@ class BranchBoundSolver:
             return
 
         root_sol, root_val = root_simplex.get_solution()
-        self._add_node(
+        root_node = self._add_node(
             node_id=0,
             parent=None,
             bounds={},
@@ -71,7 +71,7 @@ class BranchBoundSolver:
             int_vars=self.integer_vars,
         )
         if self._is_int(root_sol, self.integer_vars):
-            self.best_solution, self.best_value = root_sol, root_val
+            self.best_solution, self.best_value = root_node["solution"], root_val
             self.steps.append({
                 "key": "bab.log.integer_root",
                 "params": []
@@ -160,7 +160,7 @@ class BranchBoundSolver:
 
             # actualização da melhor solução inteira
             if new_node["integer_feasible"] and sub_val > self.best_value:
-                self.best_solution, self.best_value = sub_sol, sub_val
+                self.best_solution, self.best_value = new_node["solution"], sub_val
                 self.steps.append({
                     "key": "bab.log.update_best",
                     "params": [sub_val]
@@ -207,12 +207,19 @@ class BranchBoundSolver:
             int_vars = []
 
         int_feasible = sol is not None and self._is_int(sol, int_vars)
+        
+        clean_sol = None
+        if sol is not None:
+            clean_sol = list(sol)
+            for i in int_vars:
+                if i < len(clean_sol) and abs(clean_sol[i] - round(clean_sol[i])) < 1e-6:
+                    clean_sol[i] = float(round(clean_sol[i]))
 
         node = {
             "id": node_id,
             "parent": parent,
             "bounds": bounds,
-            "solution": sol,
+            "solution": clean_sol,
             "value": val,
             "feasible": feasible,
             "integer_feasible": int_feasible,

@@ -47,6 +47,7 @@ def bab_ui():
     c = []
     var_types = []
     int_vars = []
+    binary_vars = []
     for i in range(n_vars):
         default = saved_c[i] if i < len(saved_c) else 1.0
         # Default type from saved var_types, then from int_vars, fallback to Integer
@@ -68,15 +69,16 @@ def bab_ui():
             )
             var_types.append(vtype)
             
-            # Adjust number_input based on type
+            # The coefficient input is independent of the variable domain
+            val = st.number_input(f"**x{i+1}**", value=float(default), key=f"bb_c_{i}", help=f"{t('simplex.coef_help')} x{i+1}")
+            
+            # Track integer and binary variables
             if vtype == t("simplex.var_binary"):
-                val = st.number_input(f"**x{i+1}**", min_value=0.0, max_value=1.0, value=min(max(default, 0.0), 1.0), step=1.0, key=f"bb_c_{i}", help=f"{t('simplex.coef_help')} x{i+1}")
                 int_vars.append(i)
+                binary_vars.append(i)
             elif vtype == t("simplex.var_integer"):
-                val = st.number_input(f"**x{i+1}**", value=float(round(default)), step=1.0, key=f"bb_c_{i}", help=f"{t('simplex.coef_help')} x{i+1}")
                 int_vars.append(i)
-            else:
-                val = st.number_input(f"**x{i+1}**", value=default, key=f"bb_c_{i}", help=f"{t('simplex.coef_help')} x{i+1}")
+                
             c.append(val)
 
     # Restrições
@@ -163,6 +165,13 @@ def bab_ui():
                         b_conv.append(rhs)
                         A_conv.append([-x for x in row])
                         b_conv.append(-rhs)
+
+                # Adicionar restrições x_i <= 1 para variáveis binárias
+                for i in binary_vars:
+                    row = [0.0] * n_vars
+                    row[i] = 1.0
+                    A_conv.append(row)
+                    b_conv.append(1.0)
 
                 # Ajustar função objetivo para Minimização se necessário
                 final_c = list(c)
