@@ -1,5 +1,14 @@
 # Visual Optimization System 📊
 
+<div align="center">
+  <img src="images/solver_lp_home.png" alt="Visual Optimization System - Home Page" width="850">
+  <br><br>
+
+  [![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://solver-linear-programing.streamlit.app/)
+  
+  **[🚀 Try it live on Streamlit Cloud! | Teste a versão online agora na Streamlit Cloud!](https://solver-linear-programing.streamlit.app/)**
+</div>
+
 ## About the Project
 
 The **Visual Optimization System** (Solver LP) is an interactive and didactic platform developed to assist in teaching and learning Operations Research. It focuses on the resolution and visualization of **Linear Programming (LP)** and **Integer Programming (IP)** problems.
